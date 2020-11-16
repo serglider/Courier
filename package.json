@@ -1,0 +1,51 @@
+{
+  "name": "event-courier",
+  "version": "0.1.0",
+  "description": "todo",
+  "keywords": [
+    "todo"
+  ],
+  "license": "MIT",
+  "main": "dist/courier.cjs.js",
+  "module": "dist/courier.esm.js",
+  "browser": "dist/courier.umd.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/serglider/dice-textures.git"
+  },
+  "dependencies": {},
+  "devDependencies1": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.13.0",
+    "prettier": "^1.19.1",
+    "rollup": "^1.0.0",
+    "rollup-plugin-commonjs": "^9.2.0",
+    "rollup-plugin-node-resolve": "^4.0.0",
+    "rollup-plugin-typescript": "^1.0.0",
+    "tslib": "^1.9.3",
+    "typescript": "^3.2.2"
+  },
+  "devDependencies": {
+    "@ampproject/rollup-plugin-closure-compiler": "^0.26.0",
+    "prettier": "^2.1.2",
+    "rollup": "^2.33.1",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "tslib": "^2.0.3",
+    "typescript": "^4.0.5"
+  },
+  "scripts": {
+    "build": "rollup -c rollup/prod.config.js",
+    "dev": "rollup -c rollup/dev.config.js -w"
+  },
+  "files": [
+    "dist"
+  ],
+  "prettier": {
+    "trailingComma": "es5",
+    "printWidth": 100,
+    "tabWidth": 4,
+    "semi": true,
+    "singleQuote": true
+  }
+}

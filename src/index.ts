@@ -1,4 +1,11 @@
-import createCourier from './Courier';
-
-const documentCourier = createCourier(document);
-export const Courier = Object.assign(documentCourier, { createCourier });
+import { createCourier } from './Courier';
+export { createCourier } from './Courier';
+export const {
+    on,
+    once,
+    emit,
+    emitWithResponse,
+    emitAndStore,
+    emitAndStoreWithResponse,
+    subscribe,
+} = createCourier(document);

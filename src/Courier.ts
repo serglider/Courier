@@ -18,7 +18,7 @@ class MyCustomEvent extends CustomEvent {
     }
 }
 
-export default function createCourier(target: EventTargetType) {
+export function createCourier(target: EventTargetType) {
     const eventStorage: EventStorageType = {};
 
     function on(eName: string, handler: HandlerType) {

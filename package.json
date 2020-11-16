@@ -1,9 +1,9 @@
 {
   "name": "event-courier",
   "version": "0.1.0",
-  "description": "todo",
+  "description": "A tiny wrapper over the DOM CustomEvent with some additional niceties.",
   "keywords": [
-    "todo"
+    "CustomEvent"
   ],
   "license": "MIT",
   "main": "dist/courier.cjs.js",
@@ -11,7 +11,7 @@
   "browser": "dist/courier.umd.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/serglider/dice-textures.git"
+    "url": "https://github.com/serglider/Courier.git"
   },
   "dependencies": {},
   "devDependencies1": {

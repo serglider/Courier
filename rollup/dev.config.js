@@ -7,7 +7,7 @@ export default [
 	{
 		input: 'src/index.ts',
 		output: {
-			name: 'createCourier',
+			name: 'Courier',
 			file: pkg.browser,
 			format: 'umd'
 		},

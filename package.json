@@ -36,7 +36,10 @@
   },
   "scripts": {
     "build": "rollup -c rollup/prod.config.js",
-    "dev": "rollup -c rollup/dev.config.js -w"
+    "dev": "rollup -c rollup/dev.config.js -w",
+    "version-minor": "npm version minor",
+    "version-patch": "npm version minor",
+    "postversion": "npm publish"
   },
   "files": [
     "dist"

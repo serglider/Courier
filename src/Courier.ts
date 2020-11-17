@@ -1,31 +1,38 @@
 import {
     CustomHandlerType,
-    EventStorageType,
     EventTargetType,
     HandlerCollection,
     HandlerType,
     MyEvent,
     SendResponseType,
+    FuncCollection,
 } from './types';
 import { curry, customize, noop } from './utils';
 
 // @ts-ignore
 class MyCustomEvent extends CustomEvent {
-    sendResponse?: SendResponseType = noop
+    sendResponse?: SendResponseType = noop;
 
-    constructor({ typeArg, eventInitDict }: { typeArg: string, eventInitDict?: CustomEventInit }) {
+    constructor({ typeArg, eventInitDict }: { typeArg: string; eventInitDict?: CustomEventInit }) {
         super(typeArg, eventInitDict);
     }
 }
 
 export function createCourier(target: EventTargetType) {
-    const eventStorage: EventStorageType = {};
+    target.storedCourierData = target.storedCourierData || {};
+
+    // ---- PUBLIC METHODS ----
+
+    // function off(eName: string) {
+    //     console.log(eName);
+    // }
 
     function on(eName: string, handler: HandlerType) {
         const customizedHandler: CustomHandlerType = customize(handler);
         _handleState(eName, customizedHandler);
         // @ts-ignore
         target.addEventListener(eName, customizedHandler);
+        return _createUnsubscribeFunction(eName, customizedHandler);
     }
 
     function once(eName: string, handler: HandlerType) {
@@ -38,16 +45,18 @@ export function createCourier(target: EventTargetType) {
         // @ts-ignore
         target.addEventListener(eName, onceHandler);
         _handleState(eName, onceHandler);
+        return _createUnsubscribeFunction(eName, onceHandler);
     }
 
     function subscribe(handlers: HandlerCollection) {
-        Object.entries(handlers).forEach(([eName, handler]) => {
-            on(eName, handler);
-        });
+        return Object.entries(handlers).reduce((acc, [eName, handler]) => {
+            acc[eName] = on(eName, handler);
+            return acc;
+        }, {} as FuncCollection);
     }
 
     function emitAndStore(eName: string, data: any) {
-        eventStorage[eName] = { detail: data, sendResponse: noop };
+        target.storedCourierData[eName] = { detail: data, sendResponse: noop };
         _emit(eName, data);
     }
 
@@ -56,7 +65,7 @@ export function createCourier(target: EventTargetType) {
     }
 
     function emitAndStoreWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
-        eventStorage[eName] = { detail: data, sendResponse };
+        target.storedCourierData[eName] = { detail: data, sendResponse };
         _emit(eName, data, sendResponse);
     }
 
@@ -64,11 +73,14 @@ export function createCourier(target: EventTargetType) {
         _emit(eName, data, sendResponse);
     }
 
+    // ---- PRIVATE METHODS ----
+
     function _emit(eName: string, data: any, sendResponse?: SendResponseType) {
         const event = new MyCustomEvent({
-            typeArg: eName, eventInitDict: {
+            typeArg: eName,
+            eventInitDict: {
                 detail: data,
-            }
+            },
         });
         if (typeof sendResponse === 'function') {
             event.sendResponse = sendResponse;
@@ -79,8 +91,15 @@ export function createCourier(target: EventTargetType) {
         target.dispatchEvent(event);
     }
 
+    function _createUnsubscribeFunction(eName: string, handler: CustomHandlerType) {
+        return function () {
+            // @ts-ignore
+            target.removeEventListener(eName, handler);
+        };
+    }
+
     function _handleState(eName: string, handler: CustomHandlerType) {
-        const storedEvent: MyEvent = eventStorage[eName];
+        const storedEvent: MyEvent = target.storedCourierData[eName];
         if (storedEvent) {
             handler(storedEvent);
         }

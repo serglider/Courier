@@ -23,10 +23,6 @@ export function createCourier(target: EventTargetType) {
 
     // ---- PUBLIC METHODS ----
 
-    // function off(eName: string) {
-    //     console.log(eName);
-    // }
-
     function on(eName: string, handler: HandlerType) {
         const customizedHandler: CustomHandlerType = customize(handler);
         _handleState(eName, customizedHandler);
@@ -55,25 +51,31 @@ export function createCourier(target: EventTargetType) {
         }, {} as FuncCollection);
     }
 
-    function emitAndStore(eName: string, data: any) {
-        target.storedCourierData[eName] = { detail: data, sendResponse: noop };
-        _emit(eName, data);
-    }
-
     function emit(eName: string, data: any) {
         _emit(eName, data);
-    }
-
-    function emitAndStoreWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
-        target.storedCourierData[eName] = { detail: data, sendResponse };
-        _emit(eName, data, sendResponse);
     }
 
     function emitWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
         _emit(eName, data, sendResponse);
     }
 
+    function emitAndStoreWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
+        _storeData(eName, data, sendResponse);
+        _emit(eName, data, sendResponse);
+    }
+
+    function emitAndStore(eName: string, data: any) {
+        _storeData(eName, data);
+        _emit(eName, data);
+    }
+
     // ---- PRIVATE METHODS ----
+
+    function _storeData(eName: string, data: any, sendResponse?: SendResponseType) {
+        if (target.storedCourierData) {
+            target.storedCourierData[eName] = { detail: data, sendResponse: sendResponse || noop };
+        }
+    }
 
     function _emit(eName: string, data: any, sendResponse?: SendResponseType) {
         const event = new MyCustomEvent({
@@ -99,9 +101,11 @@ export function createCourier(target: EventTargetType) {
     }
 
     function _handleState(eName: string, handler: CustomHandlerType) {
-        const storedEvent: MyEvent = target.storedCourierData[eName];
-        if (storedEvent) {
-            handler(storedEvent);
+        if (target.storedCourierData) {
+            const storedEvent: MyEvent = target.storedCourierData[eName];
+            if (storedEvent) {
+                handler(storedEvent);
+            }
         }
     }
 

@@ -9,4 +9,3 @@ export const {
     emitAndStoreWithResponse,
     subscribe,
 } = createCourier(window);
-console.log((new Date).toISOString());

@@ -27,7 +27,7 @@ import {
     emitWithResponse,
     emitAndStore,
     emitAndStoreWithResponse
-} from 'event-courier;
+} from 'event-courier';
 ```
 If you loaded it as a script
 ```javascript

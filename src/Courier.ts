@@ -1,16 +1,16 @@
 import {
-    CustomHandlerType,
+    CourierEventHandlerType,
     EventTargetType,
     HandlerCollection,
     HandlerType,
-    MyEvent,
+    CourierEvent,
     SendResponseType,
     FuncCollection,
 } from './types';
 import { curry, customize, noop } from './utils';
 
 // @ts-ignore
-class MyCustomEvent extends CustomEvent {
+class CourierCustomEvent extends CustomEvent {
     sendResponse?: SendResponseType = noop;
 
     constructor({ typeArg, eventInitDict }: { typeArg: string; eventInitDict?: CustomEventInit }) {
@@ -18,68 +18,138 @@ class MyCustomEvent extends CustomEvent {
     }
 }
 
-export function createCourier(target: EventTargetType) {
-    target.storedCourierData = target.storedCourierData || {};
+/**
+ * It creates and returns an Courier instance
+ * @remarks
+ * This method is part
+ * @param {HTMLElement|Document|Window} target  - an event target
+ * @param {boolean} [isCurried=true] - flag indicating whether to curry output functions or not
+ */
+export function createCourier(target: EventTargetType, isCurried: boolean = true) {
+    target.courierEventDataStore = target.courierEventDataStore || {};
 
-    // ---- PUBLIC METHODS ----
-
-    function on(eName: string, handler: HandlerType) {
-        const customizedHandler: CustomHandlerType = customize(handler);
-        _handleState(eName, customizedHandler);
+    /**
+     * It sets an event listener listening to the event with the provided name.
+     * The listener called immediately if an event was stored in the target's "courierEventDataStore"
+     * @public
+     * @param {string} eventName - an event name
+     * @param {HandlerType} handler - function called once the event with name "eventName" fired on the event target
+     * @return function that removes the event listener listening to the event with the provided name from the event target
+     */
+    function on(eventName: string, handler: HandlerType) {
+        const customizedHandler: CourierEventHandlerType = customize(handler);
+        _handleStoredEvent(eventName, customizedHandler);
         // @ts-ignore
-        target.addEventListener(eName, customizedHandler);
-        return _createUnsubscribeFunction(eName, customizedHandler);
+        target.addEventListener(eventName, customizedHandler);
+        return _createUnsubscribeFunction(eventName, customizedHandler);
     }
 
-    function once(eName: string, handler: HandlerType) {
-        const customizedHandler: CustomHandlerType = customize(handler);
-        const onceHandler = (e: MyEvent) => {
+    /**
+     * It sets an event listener listening to the event with the provided name only once
+     * The listener called immediately if an event was stored in the target's "courierEventDataStore"
+     * @public
+     * @param {string} eventName - an event name
+     * @param {HandlerType} handler - function called once the event with name "eventName" fired on the event target
+     * @return function that removes the event listener listening to the event with the provided name from the event target
+     */
+    function once(eventName: string, handler: HandlerType) {
+        const customizedHandler: CourierEventHandlerType = customize(handler);
+        const onceHandler = (e: CourierEvent) => {
             customizedHandler(e);
             // @ts-ignore
-            target.removeEventListener(eName, onceHandler);
+            target.removeEventListener(eventName, onceHandler);
         };
         // @ts-ignore
-        target.addEventListener(eName, onceHandler);
-        _handleState(eName, onceHandler);
-        return _createUnsubscribeFunction(eName, onceHandler);
+        target.addEventListener(eventName, onceHandler);
+        _handleStoredEvent(eventName, onceHandler);
+        return _createUnsubscribeFunction(eventName, onceHandler);
     }
 
+    /**
+     * A convenience method that sets event listeners in a bulk
+     * @public
+     * @param {HandlerCollection} handlers - an object where keys are event name and values are listeners for those events
+     * @return object where keys are event name and values are functions called to unsubscribe from those events
+     */
     function subscribe(handlers: HandlerCollection) {
-        return Object.entries(handlers).reduce((acc, [eName, handler]) => {
-            acc[eName] = on(eName, handler);
+        return Object.entries(handlers).reduce((acc, [eventName, handler]) => {
+            acc[eventName] = on(eventName, handler);
             return acc;
         }, {} as FuncCollection);
     }
 
-    function emit(eName: string, data: any) {
-        _emit(eName, data);
+    /**
+     * Fires an event on the event target with the provided name and data
+     * @public
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     */
+    function emit(eventName: string, data: any) {
+        _emit(eventName, data);
     }
 
-    function emitWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
-        _emit(eName, data, sendResponse);
+    /**
+     * Fires an event on the event target with the provided name and data
+     * and provides "sendResponse" function to be (optionally) called by the event listener
+     * @public
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     * @param sendResponse
+     */
+    function emitWithResponse(eventName: string, data: any, sendResponse: SendResponseType) {
+        _emit(eventName, data, sendResponse);
     }
 
-    function emitAndStoreWithResponse(eName: string, data: any, sendResponse: SendResponseType) {
-        _storeData(eName, data, sendResponse);
-        _emit(eName, data, sendResponse);
+    /**
+     * Fires an event on the event target with the provided name and data
+     * and provides "sendResponse" function to be (optionally) called by the event listener
+     * and saves the data in the special event target's store for late subscribers
+     * @public
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     * @param sendResponse
+     */
+    function emitAndStoreWithResponse(eventName: string, data: any, sendResponse: SendResponseType) {
+        _storeData(eventName, data, sendResponse);
+        _emit(eventName, data, sendResponse);
     }
 
-    function emitAndStore(eName: string, data: any) {
-        _storeData(eName, data);
-        _emit(eName, data);
+    /**
+     * Fires an event on the event target with the provided name and data
+     * and saves the data in the special event target's store for late subscribers
+     * @public
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     */
+    function emitAndStore(eventName: string, data: any) {
+        _storeData(eventName, data);
+        _emit(eventName, data);
     }
 
-    // ---- PRIVATE METHODS ----
-
-    function _storeData(eName: string, data: any, sendResponse?: SendResponseType) {
-        if (target.storedCourierData) {
-            target.storedCourierData[eName] = { detail: data, sendResponse: sendResponse || noop };
+    /**
+     * It saves the event data in the special event target's store for late subscribers
+     * @private
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     * @param sendResponse
+     */
+    function _storeData(eventName: string, data: any, sendResponse?: SendResponseType) {
+        if (target.courierEventDataStore) {
+            target.courierEventDataStore[eventName] = { detail: data, sendResponse: sendResponse || noop };
         }
     }
 
-    function _emit(eName: string, data: any, sendResponse?: SendResponseType) {
-        const event = new MyCustomEvent({
-            typeArg: eName,
+    /**
+     * Fires an event on the event target with the provided name and data
+     * and provides "sendResponse" function to be (optionally) called by the event listener
+     * @private
+     * @param {string} eventName - an event name
+     * @param {any} data - data to be sent with this event
+     * @param {SendResponseType} [sendResponse]
+     */
+    function _emit(eventName: string, data: any, sendResponse?: SendResponseType) {
+        const event = new CourierCustomEvent({
+            typeArg: eventName,
             eventInitDict: {
                 detail: data,
             },
@@ -93,16 +163,28 @@ export function createCourier(target: EventTargetType) {
         target.dispatchEvent(event);
     }
 
-    function _createUnsubscribeFunction(eName: string, handler: CustomHandlerType) {
+    /**
+     * It removes the event listener (listening to the event target with the provided name) from the event target
+     * @private
+     * @param {string} eventName - an event name
+     * @param {CourierEventHandlerType} handler
+     */
+    function _createUnsubscribeFunction(eventName: string, handler: CourierEventHandlerType) {
         return function () {
             // @ts-ignore
-            target.removeEventListener(eName, handler);
+            target.removeEventListener(eventName, handler);
         };
     }
 
-    function _handleState(eName: string, handler: CustomHandlerType) {
-        if (target.storedCourierData) {
-            const storedEvent: MyEvent = target.storedCourierData[eName];
+    /**
+     * It calls the event handler if an event with the provided name exists in the event target's event store
+     * @private
+     * @param {string} eventName - an event name
+     * @param {CourierEventHandlerType} handler
+     */
+    function _handleStoredEvent(eventName: string, handler: CourierEventHandlerType) {
+        if (target.courierEventDataStore) {
+            const storedEvent: CourierEvent = target.courierEventDataStore[eventName];
             if (storedEvent) {
                 handler(storedEvent);
             }
@@ -110,12 +192,14 @@ export function createCourier(target: EventTargetType) {
     }
 
     return {
-        on: curry(on),
-        once: curry(once),
-        emit: curry(emit),
-        emitWithResponse: curry(emitWithResponse),
-        emitAndStore: curry(emitAndStore),
-        emitAndStoreWithResponse: curry(emitAndStoreWithResponse),
+        on: isCurried ? curry(on) : on,
+        once: isCurried ? curry(once) : once,
+        emit: isCurried ? curry(emit) : emit,
+        emitWithResponse: isCurried ? curry(emitWithResponse) : emitWithResponse,
+        emitAndStore: isCurried ? curry(emitAndStore) : emitAndStore,
+        emitAndStoreWithResponse: isCurried
+            ? curry(emitAndStoreWithResponse)
+            : emitAndStoreWithResponse,
         subscribe,
     };
 }

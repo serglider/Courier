@@ -1,8 +1,8 @@
 export type SendResponseType = (data?: any) => void;
-export type MyEvent = { detail: any; sendResponse: SendResponseType };
+export type CourierEvent = { detail: any; sendResponse: SendResponseType };
 export type HandlerType = (detail: any, sendResponse?: SendResponseType) => void;
-export type CustomHandlerType = (e: MyEvent) => void;
-export type EventTargetType = (HTMLElement | Document | Window) & { storedCourierData?: EventStorageType };
-export type EventStorageType = { [key: string]: MyEvent };
+export type CourierEventHandlerType = (e: CourierEvent) => void;
+export type EventTargetType = (HTMLElement | Document | Window) & { courierEventDataStore?: EventStorageType };
+export type EventStorageType = { [key: string]: CourierEvent };
 export type HandlerCollection = { [key: string]: HandlerType };
 export type FuncCollection = { [key: string]: Function };

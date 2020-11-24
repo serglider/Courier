@@ -1,6 +1,6 @@
 # Courier
 
-A tiny wrapper over the DOM CustomEvent with some additional niceties.
+A tiny wrapper over the DOM CustomEvent with some additional niceties. It facilitates communication among independent or loosely coupled components. The only dependency is a shared DOM.
 
 ## Setup
 ```event-courier``` can be installed with npm or using a content delivery network URL to embed it on your HTML page
@@ -29,7 +29,7 @@ import {
     emitAndStoreWithResponse
 } from 'event-courier';
 ```
-If you loaded it as a script
+If loaded as a script
 ```javascript
 const {
     createCourier,
@@ -42,48 +42,88 @@ const {
     emitAndStoreWithResponse
 } = Courier;
 ```
-You can create your own Courier instance:
+The library expose the ```createCourier``` factory function bundled with methods of the pre-made instance. That instance uses ```window``` as an event target.
 ```javascript
-const element = document.getElementById('elementID');
-const courier = createCourier(element);
-const {
-    on,
-    once,
-    subscribe,
-    emit,
-    emitWithResponse,
-    emitAndStore,
-    emitAndStoreWithResponse
-} = courier;
-```
-or you can use pre-made Courier instance. It uses ```window``` as an event target.
-```
 import { on, emit } from 'event-courier;
 ```
 
+```javascript
+import { createCourier } from 'event-courier;
+const element = document.getElementById('elementID');
+const courier = createCourier(element);
+const { on, emit } = courier;
+```
+
+## Saving event
+```javascript
+import { on, emitAndStore } from 'event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42
+}
+emitAndStore('EventA', 42);
+setTimeout(() => {
+    on('EventA', eventAHandler);
+}, 1000);
+```
+The callback will be immediately called on subscription and then on all subsequent events.
+
+## Event with response
+```javascript
+import { on, emitWithResponse } from 'event-courier;
+
+function onEventAResponse(data) {
+    console.log(data); // 43
+}
+
+function eventAHandler(data, senResponse) {
+    // no matter how the event was fired,
+    // it's safe to assume that the 'senResponse'
+    // is a function and always there as a second argument
+    console.log(data); // 42
+    senResponse(data + 1)
+}
+
+on('EventA', eventAHandler);
+emitWithResponse('EventA', 42, onEventAResponse);
+```
+
+## Saved event with response
+The combination of the two options above:
+```javascript
+import { on, emitAndStoreWithResponse } from 'event-courier;
+
+function onEventAResponse(data) {
+    console.log(data); // 43
+}
+
+function eventAHandler(data, senResponse) {
+    // no matter how the event was fired,
+    // it's safe to assume that the 'senResponse'
+    // is a function and always there as a second argument
+    console.log(data); // 42
+    senResponse(data + 1)
+}
+
+emitAndStoreWithResponse('EventA', 42, onEventAResponse);
+setTimeout(() => {
+    on('EventA', eventAHandler);
+}, 1000)
+```
+
 ## Currying
-All the methods of a Courier instance are curried function by default.
-This gives you the ability to do things like the following:
-```javascript
-const onEventA = on('EventA');
-const fireEventB = emit('EventB');
-// and then later
-onEventA(callback);
-fireEventB(data);
-```
-That means that just doing, for example, this
-```javascript
-emit('EventB');
-```
-will not fire an event. To fire an event the second argument here has to be defined
-```javascript
-emit('EventB', null);
-```
-If such behavior doesn't suit your needs you can create a Courier instance with the second argument being false. In this case, the methods will not be curried.
+All the non-unary methods of a Courier instance will be curried if you provide the second truthy argument:
 ```javascript
 const element = document.getElementById('elementID');
-const courier = createCourier(element, false);
-courier.emit('EventB');
+const { on, emit } = createCourier(element, true);
+```
+In this case you can do thing like the following:
+```javascript
+const onEventA = on('EventA'); // will not fire an event, just returns a function
+const fireEventB = emit('EventB'); // will not set a listener, just returns a function
+// and then later
+onEventA(data => console.log(data));
+fireEventB(42);
 ```
 
 ## Documentation

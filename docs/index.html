@@ -67,7 +67,7 @@
 				<a href="#courier" id="courier" style="color: inherit; text-decoration: none;">
 					<h1>Courier</h1>
 				</a>
-				<p>A tiny wrapper over the DOM CustomEvent with some additional niceties.</p>
+				<p>A tiny wrapper over the DOM CustomEvent with some additional niceties. It facilitates communication among independent or loosely coupled components. The only dependency is a shared DOM.</p>
 				<a href="#setup" id="setup" style="color: inherit; text-decoration: none;">
 					<h2>Setup</h2>
 				</a>
@@ -89,7 +89,7 @@
     emitAndStore,
     emitAndStoreWithResponse
 } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;</code></pre>
-				<p>If you loaded it as a script</p>
+				<p>If loaded as a script</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {
     createCourier,
     on,
@@ -100,38 +100,78 @@
     emitAndStore,
     emitAndStoreWithResponse
 } = Courier;</code></pre>
-				<p>You can create your own Courier instance:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> element = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;elementID&#x27;</span>);
-<span class="hljs-keyword">const</span> courier = createCourier(element);
-<span class="hljs-keyword">const</span> {
-    on,
-    once,
-    subscribe,
-    emit,
-    emitWithResponse,
-    emitAndStore,
-    emitAndStoreWithResponse
-} = courier;</code></pre>
-				<p>or you can use pre-made Courier instance. It uses <code>window</code> as an event target.</p>
-				<pre><code>import { <span class="hljs-keyword">on</span>, emit } <span class="hljs-keyword">from</span> &#x27;event-courier;</code></pre>
+				<p>The library expose the <code>createCourier</code> factory function bundled with methods of the pre-made instance. That instance uses <code>window</code> as an event target.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier;</span></code></pre>
+				<pre><code class="language-javascript">import { createCourier } from &#x27;event-courier;
+const element = document.getElementById(&#x27;elementID&#x27;);
+const courier = createCourier(element);
+const { on, emit } = courier;</code></pre>
+				<a href="#saving-event" id="saving-event" style="color: inherit; text-decoration: none;">
+					<h2>Saving event</h2>
+				</a>
+				<pre><code class="language-javascript">import { on, emitAndStore } from &#x27;event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42
+}
+emitAndStore(&#x27;EventA&#x27;, 42);
+setTimeout(() =&gt; {
+    on(&#x27;EventA&#x27;, eventAHandler);
+}, 1000);</code></pre>
+				<p>The callback will be immediately called on subscription and then on all subsequent events.</p>
+				<a href="#event-with-response" id="event-with-response" style="color: inherit; text-decoration: none;">
+					<h2>Event with response</h2>
+				</a>
+				<pre><code class="language-javascript">import { on, emitWithResponse } from &#x27;event-courier;
+
+function onEventAResponse(data) {
+    console.log(data); // 43
+}
+
+function eventAHandler(data, senResponse) {
+    // no matter how the event was fired,
+    // it&#x27;s safe to assume that the &#x27;senResponse&#x27;
+    // is a function and always there as a second argument
+    console.log(data); // 42
+    senResponse(data + 1)
+}
+
+on(&#x27;EventA&#x27;, eventAHandler);
+emitWithResponse(&#x27;EventA&#x27;, 42, onEventAResponse);</code></pre>
+				<a href="#saved-event-with-response" id="saved-event-with-response" style="color: inherit; text-decoration: none;">
+					<h2>Saved event with response</h2>
+				</a>
+				<p>The combination of the two options above:</p>
+				<pre><code class="language-javascript">import { on, emitAndStoreWithResponse } from &#x27;event-courier;
+
+function onEventAResponse(data) {
+    console.log(data); // 43
+}
+
+function eventAHandler(data, senResponse) {
+    // no matter how the event was fired,
+    // it&#x27;s safe to assume that the &#x27;senResponse&#x27;
+    // is a function and always there as a second argument
+    console.log(data); // 42
+    senResponse(data + 1)
+}
+
+emitAndStoreWithResponse(&#x27;EventA&#x27;, 42, onEventAResponse);
+setTimeout(() =&gt; {
+    on(&#x27;EventA&#x27;, eventAHandler);
+}, 1000)</code></pre>
 				<a href="#currying" id="currying" style="color: inherit; text-decoration: none;">
 					<h2>Currying</h2>
 				</a>
-				<p>All the methods of a Courier instance are curried function by default.
-				This gives you the ability to do things like the following:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> onEventA = on(<span class="hljs-string">&#x27;EventA&#x27;</span>);
-<span class="hljs-keyword">const</span> fireEventB = emit(<span class="hljs-string">&#x27;EventB&#x27;</span>);
-<span class="hljs-comment">// and then later</span>
-onEventA(callback);
-fireEventB(data);</code></pre>
-				<p>That means that just doing, for example, this</p>
-				<pre><code class="language-javascript">emit(<span class="hljs-string">&#x27;EventB&#x27;</span>);</code></pre>
-				<p>will not fire an event. To fire an event the second argument here has to be defined</p>
-				<pre><code class="language-javascript">emit(<span class="hljs-string">&#x27;EventB&#x27;</span>, <span class="hljs-literal">null</span>);</code></pre>
-				<p>If such behavior doesn&#39;t suit your needs you can create a Courier instance with the second argument being false. In this case, the methods will not be curried.</p>
+				<p>All the non-unary methods of a Courier instance will be curried if you provide the second truthy argument:</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> element = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;elementID&#x27;</span>);
-<span class="hljs-keyword">const</span> courier = createCourier(element, <span class="hljs-literal">false</span>);
-courier.emit(<span class="hljs-string">&#x27;EventB&#x27;</span>);</code></pre>
+<span class="hljs-keyword">const</span> { on, emit } = createCourier(element, <span class="hljs-literal">true</span>);</code></pre>
+				<p>In this case you can do thing like the following:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> onEventA = on(<span class="hljs-string">&#x27;EventA&#x27;</span>); <span class="hljs-comment">// will not fire an event, just returns a function</span>
+<span class="hljs-keyword">const</span> fireEventB = emit(<span class="hljs-string">&#x27;EventB&#x27;</span>); <span class="hljs-comment">// will not set a listener, just returns a function</span>
+<span class="hljs-comment">// and then later</span>
+onEventA(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(data));
+fireEventB(<span class="hljs-number">42</span>);</code></pre>
 				<a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
 					<h2>Documentation</h2>
 				</a>

@@ -34,6 +34,6 @@ describe('INSTANCE', () => {
 
     it('event target has storage', () => {
         const courier = Courier.createCourier(window);
-        expect(window.storedCourierData).toBeDefined();
+        expect(window.courierEventDataStore).toBeDefined();
     });
 });

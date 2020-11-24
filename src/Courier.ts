@@ -31,7 +31,7 @@ class CourierCustomEvent extends CustomEvent {
  * @param {HTMLElement|Document|Window} target  - an event target
  * @param {boolean} [isCurried=true] - flag indicating whether to curry output functions or not
  */
-export function createCourier(target: EventTargetType, isCurried: boolean = true) {
+export function createCourier(target: EventTargetType, isCurried: boolean = false) {
     target.courierEventDataStore = target.courierEventDataStore || {};
 
     /**

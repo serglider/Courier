@@ -1,5 +1,5 @@
 const Courier = require('../dist/courier.cjs');
-const { emit, emitWithResponse, emitAndStore, emitAndStoreWithResponse, on, once } = Courier.createCourier(window);
+const { emit, emitWithResponse, emitAndStore, emitAndStoreWithResponse, on, once } = Courier.createCourier(window, true);
 const eventName = 'ev';
 const eventData = 42;
 

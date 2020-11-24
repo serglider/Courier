@@ -39,7 +39,7 @@
   },
   "scripts": {
     "build": "rollup -c rollup/prod.config.js",
-    "prebuild": "jest",
+    "postbuild": "jest",
     "dev": "rollup -c rollup/dev.config.js -w",
     "version-minor": "npm version minor",
     "version-patch": "npm version patch",

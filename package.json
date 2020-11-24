@@ -46,7 +46,7 @@
     "postversion": "npm publish",
     "test-dev": "jest --watch",
     "test": "jest",
-    "docs-gen": "node_modules/.bin/typedoc --out docs src"
+    "docs-gen": "node_modules/.bin/typedoc --out docs src && node scripts/create-nojekill"
   },
   "files": [
     "dist"

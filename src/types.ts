@@ -1,3 +1,9 @@
+// types.ts
+/**
+ * Custom types used in the library
+ * @packageDocumentation
+ */
+
 export type SendResponseType = (data?: any) => void;
 export type CourierEvent = { detail: any; sendResponse: SendResponseType };
 export type HandlerType = (detail: any, sendResponse?: SendResponseType) => void;

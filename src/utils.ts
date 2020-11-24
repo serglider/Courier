@@ -1,3 +1,9 @@
+// utils.ts
+/**
+ * Utilities used in the library
+ * @packageDocumentation
+ */
+
 import { HandlerType, CourierEvent } from './types';
 
 /**

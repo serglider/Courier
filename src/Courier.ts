@@ -1,3 +1,9 @@
+// Courier.ts
+/**
+ * The module exposes a factory function that creates a ```courier``` object.
+ * @packageDocumentation
+ */
+
 import {
     CourierEventHandlerType,
     EventTargetType,

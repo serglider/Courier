@@ -1,3 +1,10 @@
+// index.ts
+/**
+ * The library exposes a factory function that creates a ```courier``` object
+ * and a pre-made courier object where the event target is ```window```.
+ * @packageDocumentation
+ */
+
 import { createCourier } from './Courier';
 export { createCourier } from './Courier';
 export const {
@@ -14,9 +21,9 @@ export const {
      * It sets an event listener listening to the event with the provided name only once
      * The listener called immediately if an event was stored in the target's "courierEventDataStore"
      * @public
-     * @param {string} eventName - an event name
-     * @param {HandlerType} handler - function called once the event with name "eventName" fired on the event target
-     * @return function that removes the event listener listening to the event with the provided name from the event target
+     * @param -  eventName {string} - an event name
+     * @param -  handler {HandlerType} - function called once the event with name "eventName" fired on the event target
+     * @return - function that removes the event listener listening to the event with the provided name from the event target
      */
     once,
     /**

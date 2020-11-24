@@ -39,8 +39,8 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * The listener called immediately if an event was stored in the target's "courierEventDataStore"
      * @public
      * @param {string} eventName - an event name
-     * @param {HandlerType} handler - function called once the event with name "eventName" fired on the event target
-     * @return function that removes the event listener listening to the event with the provided name from the event target
+     * @param {HandlerType} handler - function called once the event with this name fired on the event target
+     * @return function that removes this listener from the event target
      */
     function on(eventName: string, handler: HandlerType) {
         const customizedHandler: CourierEventHandlerType = customize(handler);
@@ -55,8 +55,8 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * The listener called immediately if an event was stored in the target's "courierEventDataStore"
      * @public
      * @param {string} eventName - an event name
-     * @param {HandlerType} handler - function called once the event with name "eventName" fired on the event target
-     * @return function that removes the event listener listening to the event with the provided name from the event target
+     * @param {HandlerType} handler - function called once the event with this name fired on the event target
+     * @return function that removes this listener from the event target
      */
     function once(eventName: string, handler: HandlerType) {
         const customizedHandler: CourierEventHandlerType = customize(handler);
@@ -100,7 +100,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @public
      * @param {string} eventName - an event name
      * @param {any} data - data to be sent with this event
-     * @param sendResponse
+     * @param {SendResponseType} sendResponse = function to be (optionally) called by the event listener
      */
     function emitWithResponse(eventName: string, data: any, sendResponse: SendResponseType) {
         _emit(eventName, data, sendResponse);
@@ -113,7 +113,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @public
      * @param {string} eventName - an event name
      * @param {any} data - data to be sent with this event
-     * @param sendResponse
+     * @param {SendResponseType} sendResponse = function to be (optionally) called by the event listener
      */
     function emitAndStoreWithResponse(eventName: string, data: any, sendResponse: SendResponseType) {
         _storeData(eventName, data, sendResponse);
@@ -137,7 +137,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @private
      * @param {string} eventName - an event name
      * @param {any} data - data to be sent with this event
-     * @param sendResponse
+     * @param {SendResponseType} [sendResponse] = function to be (optionally) called by the event listener
      */
     function _storeData(eventName: string, data: any, sendResponse?: SendResponseType) {
         if (target.courierEventDataStore) {
@@ -151,7 +151,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @private
      * @param {string} eventName - an event name
      * @param {any} data - data to be sent with this event
-     * @param {SendResponseType} [sendResponse]
+     * @param {SendResponseType} [sendResponse] = function to be (optionally) called by the event listener
      */
     function _emit(eventName: string, data: any, sendResponse?: SendResponseType) {
         const event = new CourierCustomEvent({
@@ -173,7 +173,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * It removes the event listener (listening to the event target with the provided name) from the event target
      * @private
      * @param {string} eventName - an event name
-     * @param {CourierEventHandlerType} handler
+     * @param {CourierEventHandlerType} handler - an event handler
      */
     function _createUnsubscribeFunction(eventName: string, handler: CourierEventHandlerType) {
         return function () {
@@ -186,7 +186,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * It calls the event handler if an event with the provided name exists in the event target's event store
      * @private
      * @param {string} eventName - an event name
-     * @param {CourierEventHandlerType} handler
+     * @param {CourierEventHandlerType} handler - an event handler
      */
     function _handleStoredEvent(eventName: string, handler: CourierEventHandlerType) {
         if (target.courierEventDataStore) {

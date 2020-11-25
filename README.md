@@ -46,12 +46,71 @@ The library expose the ```createCourier``` factory function bundled with methods
 ```javascript
 import { on, emit } from 'event-courier;
 ```
-
+or
 ```javascript
 import { createCourier } from 'event-courier;
 const element = document.getElementById('elementID');
 const courier = createCourier(element);
 const { on, emit } = courier;
+```
+then
+```javascript
+import { on, once, subscribe, emit } from 'event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42 then 43
+}
+
+function oneTimeEventHandler(data) {
+    console.log(data); // 42
+}
+
+function otherEventAHandler(data) {
+    console.log(data); // 42 then 43
+}
+
+function eventBHandler(data) {
+    console.log(data); // 44
+}
+
+once('EventA', oneTimeEventHandler);
+on('EventA', eventAHandler);
+subscribe({
+    EventA: otherEventAHandler,
+    EventB: eventBHandler
+});
+emit('EventA', 42);
+emit('EventA', 43);
+emit('EventB', 44);
+```
+
+## Unsubscription
+```javascript
+import { on, subscribe, emit } from 'event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42
+}
+
+function otherEventAHandler(data) {
+    console.log(data); // 42
+}
+
+function eventBHandler(data) {
+    // never called
+}
+
+const unsubscribeA = on('EventA', eventAHandler);
+const unsubscribe = subscribe({
+    EventA: otherEventAHandler,
+    EventB: eventBHandler
+});
+emit('EventA', 42);
+unsubscribeA();
+unsubscribe.EventA();
+unsubscribe.EventB();
+emit('EventA', 43);
+emit('EventB', 44);
 ```
 
 ## Saving event
@@ -66,7 +125,7 @@ setTimeout(() => {
     on('EventA', eventAHandler);
 }, 1000);
 ```
-The callback will be immediately called on subscription and then on all subsequent events.
+The callback will be immediately called upon subscription and then on all subsequent events.
 
 ## Event with response
 ```javascript

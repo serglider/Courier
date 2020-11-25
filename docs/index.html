@@ -102,10 +102,67 @@
 } = Courier;</code></pre>
 				<p>The library expose the <code>createCourier</code> factory function bundled with methods of the pre-made instance. That instance uses <code>window</code> as an event target.</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier;</span></code></pre>
+				<p>or</p>
 				<pre><code class="language-javascript">import { createCourier } from &#x27;event-courier;
 const element = document.getElementById(&#x27;elementID&#x27;);
 const courier = createCourier(element);
 const { on, emit } = courier;</code></pre>
+				<p>then</p>
+				<pre><code class="language-javascript">import { on, once, subscribe, emit } from &#x27;event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42 then 43
+}
+
+function oneTimeEventHandler(data) {
+    console.log(data); // 42
+}
+
+function otherEventAHandler(data) {
+    console.log(data); // 42 then 43
+}
+
+function eventBHandler(data) {
+    console.log(data); // 44
+}
+
+once(&#x27;EventA&#x27;, oneTimeEventHandler);
+on(&#x27;EventA&#x27;, eventAHandler);
+subscribe({
+    EventA: otherEventAHandler,
+    EventB: eventBHandler
+});
+emit(&#x27;EventA&#x27;, 42);
+emit(&#x27;EventA&#x27;, 43);
+emit(&#x27;EventB&#x27;, 44);</code></pre>
+				<a href="#unsubscription" id="unsubscription" style="color: inherit; text-decoration: none;">
+					<h2>Unsubscription</h2>
+				</a>
+				<pre><code class="language-javascript">import { on, subscribe, emit } from &#x27;event-courier;
+
+function eventAHandler(data) {
+    console.log(data); // 42
+}
+
+function otherEventAHandler(data) {
+    console.log(data); // 42
+}
+
+function eventBHandler(data) {
+    // never called
+}
+
+const unsubscribeA = on(&#x27;EventA&#x27;, eventAHandler);
+const unsubscribe = subscribe({
+    EventA: otherEventAHandler,
+    EventB: eventBHandler
+});
+emit(&#x27;EventA&#x27;, 42);
+unsubscribeA();
+unsubscribe.EventA();
+unsubscribe.EventB();
+emit(&#x27;EventA&#x27;, 43);
+emit(&#x27;EventB&#x27;, 44);</code></pre>
 				<a href="#saving-event" id="saving-event" style="color: inherit; text-decoration: none;">
 					<h2>Saving event</h2>
 				</a>
@@ -118,7 +175,7 @@ emitAndStore(&#x27;EventA&#x27;, 42);
 setTimeout(() =&gt; {
     on(&#x27;EventA&#x27;, eventAHandler);
 }, 1000);</code></pre>
-				<p>The callback will be immediately called on subscription and then on all subsequent events.</p>
+				<p>The callback will be immediately called upon subscription and then on all subsequent events.</p>
 				<a href="#event-with-response" id="event-with-response" style="color: inherit; text-decoration: none;">
 					<h2>Event with response</h2>
 				</a>

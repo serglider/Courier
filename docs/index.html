@@ -101,122 +101,122 @@
     emitAndStoreWithResponse
 } = Courier;</code></pre>
 				<p>The library expose the <code>createCourier</code> factory function bundled with methods of the pre-made instance. That instance uses <code>window</code> as an event target.</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier;</span></code></pre>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;</code></pre>
 				<p>or</p>
-				<pre><code class="language-javascript">import { createCourier } from &#x27;event-courier;
-const element = document.getElementById(&#x27;elementID&#x27;);
-const courier = createCourier(element);
-const { on, emit } = courier;</code></pre>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { createCourier } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
+<span class="hljs-keyword">const</span> element = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;elementID&#x27;</span>);
+<span class="hljs-keyword">const</span> courier = createCourier(element);
+<span class="hljs-keyword">const</span> { on, emit } = courier;</code></pre>
 				<p>then</p>
-				<pre><code class="language-javascript">import { on, once, subscribe, emit } from &#x27;event-courier;
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, once, subscribe, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
 
-function eventAHandler(data) {
-    console.log(data); // 42 then 43
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42 then 43</span>
 }
 
-function oneTimeEventHandler(data) {
-    console.log(data); // 42
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">oneTimeEventHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
 }
 
-function otherEventAHandler(data) {
-    console.log(data); // 42 then 43
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">otherEventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42 then 43</span>
 }
 
-function eventBHandler(data) {
-    console.log(data); // 44
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventBHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 44</span>
 }
 
-once(&#x27;EventA&#x27;, oneTimeEventHandler);
-on(&#x27;EventA&#x27;, eventAHandler);
+once(<span class="hljs-string">&#x27;EventA&#x27;</span>, oneTimeEventHandler);
+on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
 subscribe({
-    EventA: otherEventAHandler,
-    EventB: eventBHandler
+    <span class="hljs-attr">EventA</span>: otherEventAHandler,
+    <span class="hljs-attr">EventB</span>: eventBHandler
 });
-emit(&#x27;EventA&#x27;, 42);
-emit(&#x27;EventA&#x27;, 43);
-emit(&#x27;EventB&#x27;, 44);</code></pre>
+emit(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>);
+emit(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">43</span>);
+emit(<span class="hljs-string">&#x27;EventB&#x27;</span>, <span class="hljs-number">44</span>);</code></pre>
 				<a href="#unsubscription" id="unsubscription" style="color: inherit; text-decoration: none;">
 					<h2>Unsubscription</h2>
 				</a>
-				<pre><code class="language-javascript">import { on, subscribe, emit } from &#x27;event-courier;
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, subscribe, emit } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
 
-function eventAHandler(data) {
-    console.log(data); // 42
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
 }
 
-function otherEventAHandler(data) {
-    console.log(data); // 42
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">otherEventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
 }
 
-function eventBHandler(data) {
-    // never called
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventBHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-comment">// never called</span>
 }
 
-const unsubscribeA = on(&#x27;EventA&#x27;, eventAHandler);
-const unsubscribe = subscribe({
-    EventA: otherEventAHandler,
-    EventB: eventBHandler
+<span class="hljs-keyword">const</span> unsubscribeA = on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
+<span class="hljs-keyword">const</span> unsubscribe = subscribe({
+    <span class="hljs-attr">EventA</span>: otherEventAHandler,
+    <span class="hljs-attr">EventB</span>: eventBHandler
 });
-emit(&#x27;EventA&#x27;, 42);
+emit(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>);
 unsubscribeA();
 unsubscribe.EventA();
 unsubscribe.EventB();
-emit(&#x27;EventA&#x27;, 43);
-emit(&#x27;EventB&#x27;, 44);</code></pre>
+emit(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">43</span>);
+emit(<span class="hljs-string">&#x27;EventB&#x27;</span>, <span class="hljs-number">44</span>);</code></pre>
 				<a href="#saving-event" id="saving-event" style="color: inherit; text-decoration: none;">
 					<h2>Saving event</h2>
 				</a>
-				<pre><code class="language-javascript">import { on, emitAndStore } from &#x27;event-courier;
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emitAndStore } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
 
-function eventAHandler(data) {
-    console.log(data); // 42
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
 }
-emitAndStore(&#x27;EventA&#x27;, 42);
-setTimeout(() =&gt; {
-    on(&#x27;EventA&#x27;, eventAHandler);
-}, 1000);</code></pre>
+emitAndStore(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>);
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+    on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
+}, <span class="hljs-number">1000</span>);</code></pre>
 				<p>The callback will be immediately called upon subscription and then on all subsequent events.</p>
 				<a href="#event-with-response" id="event-with-response" style="color: inherit; text-decoration: none;">
 					<h2>Event with response</h2>
 				</a>
-				<pre><code class="language-javascript">import { on, emitWithResponse } from &#x27;event-courier;
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emitWithResponse } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
 
-function onEventAResponse(data) {
-    console.log(data); // 43
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onEventAResponse</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 43</span>
 }
 
-function eventAHandler(data, senResponse) {
-    // no matter how the event was fired,
-    // it&#x27;s safe to assume that the &#x27;senResponse&#x27;
-    // is a function and always there as a second argument
-    console.log(data); // 42
-    senResponse(data + 1)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data, sendResponse</span>) </span>{
+    <span class="hljs-comment">// no matter how the event was fired,</span>
+    <span class="hljs-comment">// it&#x27;s safe to assume that the &#x27;senResponse&#x27;</span>
+    <span class="hljs-comment">// is a function and always there as a second argument</span>
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
+    sendResponse(data + <span class="hljs-number">1</span>)
 }
 
-on(&#x27;EventA&#x27;, eventAHandler);
-emitWithResponse(&#x27;EventA&#x27;, 42, onEventAResponse);</code></pre>
+on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
+emitWithResponse(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>, onEventAResponse);</code></pre>
 				<a href="#saved-event-with-response" id="saved-event-with-response" style="color: inherit; text-decoration: none;">
 					<h2>Saved event with response</h2>
 				</a>
 				<p>The combination of the two options above:</p>
-				<pre><code class="language-javascript">import { on, emitAndStoreWithResponse } from &#x27;event-courier;
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emitAndStoreWithResponse } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
 
-function onEventAResponse(data) {
-    console.log(data); // 43
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">onEventAResponse</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 43</span>
 }
 
-function eventAHandler(data, senResponse) {
-    // no matter how the event was fired,
-    // it&#x27;s safe to assume that the &#x27;senResponse&#x27;
-    // is a function and always there as a second argument
-    console.log(data); // 42
-    senResponse(data + 1)
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data, sendResponse</span>) </span>{
+    <span class="hljs-comment">// no matter how the event was fired,</span>
+    <span class="hljs-comment">// it&#x27;s safe to assume that the &#x27;senResponse&#x27;</span>
+    <span class="hljs-comment">// is a function and always there as a second argument</span>
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42</span>
+    sendResponse(data + <span class="hljs-number">1</span>)
 }
 
-emitAndStoreWithResponse(&#x27;EventA&#x27;, 42, onEventAResponse);
-setTimeout(() =&gt; {
-    on(&#x27;EventA&#x27;, eventAHandler);
-}, 1000)</code></pre>
+emitAndStoreWithResponse(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>, onEventAResponse);
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+    on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
+}, <span class="hljs-number">1000</span>)</code></pre>
 				<a href="#currying" id="currying" style="color: inherit; text-decoration: none;">
 					<h2>Currying</h2>
 				</a>

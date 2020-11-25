@@ -44,18 +44,18 @@ const {
 ```
 The library expose the ```createCourier``` factory function bundled with methods of the pre-made instance. That instance uses ```window``` as an event target.
 ```javascript
-import { on, emit } from 'event-courier;
+import { on, emit } from 'event-courier';
 ```
 or
 ```javascript
-import { createCourier } from 'event-courier;
+import { createCourier } from 'event-courier';
 const element = document.getElementById('elementID');
 const courier = createCourier(element);
 const { on, emit } = courier;
 ```
 then
 ```javascript
-import { on, once, subscribe, emit } from 'event-courier;
+import { on, once, subscribe, emit } from 'event-courier';
 
 function eventAHandler(data) {
     console.log(data); // 42 then 43
@@ -86,7 +86,7 @@ emit('EventB', 44);
 
 ## Unsubscription
 ```javascript
-import { on, subscribe, emit } from 'event-courier;
+import { on, subscribe, emit } from 'event-courier';
 
 function eventAHandler(data) {
     console.log(data); // 42
@@ -115,7 +115,7 @@ emit('EventB', 44);
 
 ## Saving event
 ```javascript
-import { on, emitAndStore } from 'event-courier;
+import { on, emitAndStore } from 'event-courier';
 
 function eventAHandler(data) {
     console.log(data); // 42
@@ -129,18 +129,18 @@ The callback will be immediately called upon subscription and then on all subseq
 
 ## Event with response
 ```javascript
-import { on, emitWithResponse } from 'event-courier;
+import { on, emitWithResponse } from 'event-courier';
 
 function onEventAResponse(data) {
     console.log(data); // 43
 }
 
-function eventAHandler(data, senResponse) {
+function eventAHandler(data, sendResponse) {
     // no matter how the event was fired,
     // it's safe to assume that the 'senResponse'
     // is a function and always there as a second argument
     console.log(data); // 42
-    senResponse(data + 1)
+    sendResponse(data + 1)
 }
 
 on('EventA', eventAHandler);
@@ -150,18 +150,18 @@ emitWithResponse('EventA', 42, onEventAResponse);
 ## Saved event with response
 The combination of the two options above:
 ```javascript
-import { on, emitAndStoreWithResponse } from 'event-courier;
+import { on, emitAndStoreWithResponse } from 'event-courier';
 
 function onEventAResponse(data) {
     console.log(data); // 43
 }
 
-function eventAHandler(data, senResponse) {
+function eventAHandler(data, sendResponse) {
     // no matter how the event was fired,
     // it's safe to assume that the 'senResponse'
     // is a function and always there as a second argument
     console.log(data); // 42
-    senResponse(data + 1)
+    sendResponse(data + 1)
 }
 
 emitAndStoreWithResponse('EventA', 42, onEventAResponse);

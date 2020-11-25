@@ -43,7 +43,7 @@
     "dev": "rollup -c rollup/dev.config.js -w",
     "version-minor": "npm version minor",
     "version-patch": "npm version patch",
-    "postversion": "npm publish",
+    "postversion": "npm publish && git push",
     "test-dev": "jest --watch",
     "test": "jest",
     "docs-gen": "node_modules/.bin/typedoc --out docs src && node scripts/create-nojekill"

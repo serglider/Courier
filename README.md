@@ -127,6 +127,20 @@ setTimeout(() => {
 ```
 The callback will be immediately called upon subscription and then on all subsequent events.
 
+All events with the same name emitted this way are stored independently. It means that upon subscrition  the callback will be called for each stored event.
+```javascript
+import { on, emitAndStore } from 'event-courier';
+
+function eventAHandler(data) {
+    console.log(data); // 42 and 'foo'
+}
+emitAndStore('EventA', 42);
+emitAndStore('EventA', 'foo');
+setTimeout(() => {
+    on('EventA', eventAHandler);
+}, 1000);
+```
+
 ## Event with response
 ```javascript
 import { on, emitWithResponse } from 'event-courier';

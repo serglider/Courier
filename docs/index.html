@@ -176,6 +176,17 @@ emitAndStore(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="h
     on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
 }, <span class="hljs-number">1000</span>);</code></pre>
 				<p>The callback will be immediately called upon subscription and then on all subsequent events.</p>
+				<p>All events with the same name emitted this way are stored independently. It means that upon subscrition  the callback will be called for each stored event.</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { on, emitAndStore } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;event-courier&#x27;</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">eventAHandler</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(data); <span class="hljs-comment">// 42 and &#x27;foo&#x27;</span>
+}
+emitAndStore(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-number">42</span>);
+emitAndStore(<span class="hljs-string">&#x27;EventA&#x27;</span>, <span class="hljs-string">&#x27;foo&#x27;</span>);
+<span class="hljs-built_in">setTimeout</span>(<span class="hljs-function">() =&gt;</span> {
+    on(<span class="hljs-string">&#x27;EventA&#x27;</span>, eventAHandler);
+}, <span class="hljs-number">1000</span>);</code></pre>
 				<a href="#event-with-response" id="event-with-response" style="color: inherit; text-decoration: none;">
 					<h2>Event with response</h2>
 				</a>

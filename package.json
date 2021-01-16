@@ -1,6 +1,6 @@
 {
     "name": "event-courier",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "description": "A tiny wrapper over the DOM CustomEvent with some additional niceties.",
     "keywords": [
         "CustomEvent"

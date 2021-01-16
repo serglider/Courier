@@ -1,10 +1,10 @@
 const Courier = require('../dist/courier.cjs');
 const { on, emitAndStore } = Courier.createCourier(window);
-const eventName = 'ev';
 const eventData = 42;
 
 describe('EMIT_AND_STORE', () => {
     test('callback has been called even if subscription was after emission', () => {
+        const eventName = 'ev1';
         const callback = jest.fn();
         emitAndStore(eventName, eventData);
         on(eventName, callback);
@@ -12,6 +12,7 @@ describe('EMIT_AND_STORE', () => {
     });
 
     test('callback has been called with correct arguments even if subscription was after emission', () => {
+        const eventName = 'ev2';
         const callback = jest.fn();
         const optionalResponseCallback = expect.anything();
         emitAndStore(eventName, eventData);
@@ -20,6 +21,7 @@ describe('EMIT_AND_STORE', () => {
     });
 
     test('callback has been called with correct arguments and correct number of times even if subscription was after emission', () => {
+        const eventName = 'ev3';
         const callback = jest.fn();
         const optionalResponseCallback = expect.anything();
         emitAndStore(eventName, eventData);

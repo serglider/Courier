@@ -144,10 +144,15 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      */
     function _storeData(eventName: string, data: any, sendResponse?: SendResponseType) {
         if (target.courierEventDataStore) {
-            target.courierEventDataStore[eventName] = {
+            const courierEvent: CourierEvent = {
                 detail: data,
                 sendResponse: sendResponse || noop,
             };
+            if (Array.isArray(target.courierEventDataStore[eventName])) {
+                target.courierEventDataStore[eventName].push(courierEvent);
+            } else {
+                target.courierEventDataStore[eventName] = [courierEvent];
+            }
         }
     }
 
@@ -199,9 +204,11 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      */
     function _handleStoredEvent(eventName: string, handler: CourierEventHandlerType) {
         if (target.courierEventDataStore) {
-            const storedEvent: CourierEvent = target.courierEventDataStore[eventName];
-            if (storedEvent) {
-                handler(storedEvent);
+            const storedEvents: CourierEvent[] = target.courierEventDataStore[eventName];
+            if (storedEvents && storedEvents.length !== 0) {
+                storedEvents.forEach((storedEvent: CourierEvent) => {
+                    handler(storedEvent);
+                });
             }
         }
     }

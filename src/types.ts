@@ -11,4 +11,5 @@ export type CourierEventHandlerType = (e: CourierEvent) => void;
 export type EventTargetType = (HTMLElement | Document | Window) & { courierEventDataStore?: EventStorageType };
 export type EventStorageType = { [key: string]: CourierEvent };
 export type HandlerCollection = { [key: string]: HandlerType };
-export type FuncCollection = { [key: string]: Function };
+export type UnsubscribeFunc = () => void;
+export type UnsubscribeFuncCollection = { [key: string]: UnsubscribeFunc };

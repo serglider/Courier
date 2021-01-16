@@ -11,7 +11,8 @@ import {
     HandlerType,
     CourierEvent,
     SendResponseType,
-    FuncCollection,
+    UnsubscribeFuncCollection,
+    UnsubscribeFunc,
 } from './types';
 import { curry, customize, noop } from './utils';
 
@@ -26,8 +27,6 @@ class CourierCustomEvent extends CustomEvent {
 
 /**
  * It creates and returns an Courier instance
- * @remarks
- * This method is part
  * @param {HTMLElement|Document|Window} target  - an event target
  * @param {boolean} [isCurried=true] - flag indicating whether to curry output functions or not
  */
@@ -42,7 +41,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @param {HandlerType} handler - function called once the event with this name fired on the event target
      * @return function that removes this listener from the event target
      */
-    function on(eventName: string, handler: HandlerType) {
+    function on(eventName: string, handler: HandlerType): UnsubscribeFunc {
         const customizedHandler: CourierEventHandlerType = customize(handler);
         _handleStoredEvent(eventName, customizedHandler);
         // @ts-ignore
@@ -58,7 +57,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @param {HandlerType} handler - function called once the event with this name fired on the event target
      * @return function that removes this listener from the event target
      */
-    function once(eventName: string, handler: HandlerType) {
+    function once(eventName: string, handler: HandlerType): UnsubscribeFunc {
         const customizedHandler: CourierEventHandlerType = customize(handler);
         const onceHandler = (e: CourierEvent) => {
             customizedHandler(e);
@@ -77,11 +76,11 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @param {HandlerCollection} handlers - an object where keys are event name and values are listeners for those events
      * @return object where keys are event name and values are functions called to unsubscribe from those events
      */
-    function subscribe(handlers: HandlerCollection) {
+    function subscribe(handlers: HandlerCollection): UnsubscribeFuncCollection {
         return Object.entries(handlers).reduce((acc, [eventName, handler]) => {
             acc[eventName] = on(eventName, handler);
             return acc;
-        }, {} as FuncCollection);
+        }, {} as UnsubscribeFuncCollection);
     }
 
     /**
@@ -115,7 +114,11 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @param {any} data - data to be sent with this event
      * @param {SendResponseType} sendResponse = function to be (optionally) called by the event listener
      */
-    function emitAndStoreWithResponse(eventName: string, data: any, sendResponse: SendResponseType) {
+    function emitAndStoreWithResponse(
+        eventName: string,
+        data: any,
+        sendResponse: SendResponseType
+    ) {
         _storeData(eventName, data, sendResponse);
         _emit(eventName, data, sendResponse);
     }
@@ -141,7 +144,10 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      */
     function _storeData(eventName: string, data: any, sendResponse?: SendResponseType) {
         if (target.courierEventDataStore) {
-            target.courierEventDataStore[eventName] = { detail: data, sendResponse: sendResponse || noop };
+            target.courierEventDataStore[eventName] = {
+                detail: data,
+                sendResponse: sendResponse || noop,
+            };
         }
     }
 
@@ -175,7 +181,10 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
      * @param {string} eventName - an event name
      * @param {CourierEventHandlerType} handler - an event handler
      */
-    function _createUnsubscribeFunction(eventName: string, handler: CourierEventHandlerType) {
+    function _createUnsubscribeFunction(
+        eventName: string,
+        handler: CourierEventHandlerType
+    ): UnsubscribeFunc {
         return function () {
             // @ts-ignore
             target.removeEventListener(eventName, handler);

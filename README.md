@@ -1,3 +1,9 @@
+![npm](https://img.shields.io/npm/v/event-courier)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/event-courier)
+![NPM](https://img.shields.io/npm/l/event-courier)
+![GitHub top language](https://img.shields.io/github/languages/top/serglider/Courier)
+<!--- https://shields.io/ badges -->
+
 # Courier
 
 A tiny wrapper over the DOM CustomEvent with some additional niceties. It facilitates communication among independent or loosely coupled components. The only dependency is a shared DOM.

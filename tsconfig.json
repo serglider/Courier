@@ -1,20 +1,17 @@
 {
-  "compilerOptions": {
-    "target": "ES2015",
-    "module": "commonjs",
-    "declaration": true,
-    "sourceMap": true,
-    "declarationMap": true,
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "esModuleInterop": true
-  },
-  "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./node_modules/**/*"
-  ]
+    "compilerOptions": {
+        "target": "ES2015",
+        "module": "commonjs",
+        "declaration": true,
+        "declarationDir": "./types",
+        "sourceMap": true,
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "allowUnreachableCode": false,
+        "esModuleInterop": true
+    },
+    "include": ["./src/**/*"],
+    "exclude": ["./node_modules/**/*"]
 }

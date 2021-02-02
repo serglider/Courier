@@ -9,10 +9,7 @@
     "main": "dist/courier.cjs.js",
     "module": "dist/courier.esm.js",
     "browser": "dist/courier.umd.js",
-    "typings": "dist/courier.d.ts",
-    "typescript": {
-        "definition": "dist/courier.d.ts"
-    },
+    "typings": "types",
     "repository": {
         "type": "git",
         "url": "https://github.com/serglider/Courier.git"
@@ -44,7 +41,6 @@
     "scripts": {
         "build": "rollup -c rollup/prod.config.js",
         "postbuild": "jest",
-        "import-declarations": "node scripts/import-declarations",
         "dev": "rollup -c rollup/dev.config.js -w",
         "version-minor": "npm version minor",
         "version-patch": "npm version patch",

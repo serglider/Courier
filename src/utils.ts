@@ -19,7 +19,7 @@ export function customize(handler: HandlerType) {
 }
 
 /**
- * It curried the provided function
+ * It curries the provided function
  * @private
  * @param {function} func
  * @return curried function

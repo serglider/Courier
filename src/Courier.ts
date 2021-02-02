@@ -73,7 +73,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
     /**
      * A convenience method that sets event listeners in a bulk
      * @public
-     * @param {HandlerCollection} handlers - an object where keys are event name and values are listeners for those events
+     * @param {HandlerCollection} handlers - an object where keys are event names and values are listeners for those events
      * @return object where keys are event name and values are functions called to unsubscribe from those events
      */
     function subscribe(handlers: HandlerCollection): UnsubscribeFuncCollection {

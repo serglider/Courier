@@ -4,6 +4,10 @@ import typescript from 'rollup-plugin-typescript';
 import compiler from '@ampproject/rollup-plugin-closure-compiler';
 import pkg from '../package.json';
 
+const compilerOptions = {
+	language_out: 'ECMASCRIPT_2015'
+}
+
 export default [
 	{
 		input: 'src/index.ts',

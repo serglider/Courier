@@ -25,8 +25,17 @@ export function customize(handler: HandlerType) {
  * @return curried function
  */
 export function curry(func: Function) {
-    return function currify(...args: any[]): Function | void {
-        return args.length >= func.length ? func.apply(null, args) : currify.bind(null, ...args);
+    return function curried() {
+        const args = [].slice.call(arguments);
+        if (args.length >= func.length) {
+            return func.apply(null, args);
+        } else {
+            return function() {
+                const args2 = [].slice.call(arguments);
+                // @ts-ignore
+                return curried.apply(null, args.concat(args2));
+            }
+        }
     };
 }
 

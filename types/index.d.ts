@@ -13,7 +13,7 @@ export declare const
  * @param {HandlerType} handler - function called once the event with this name fired on the event target
  * @return function that removes this listener from the event target
  */
-on: ((...args: any[]) => void | Function) | ((eventName: string, handler: import("./types").HandlerType) => import("./types").UnsubscribeFunc), 
+on: (() => any) | ((eventName: string, handler: import("./types").HandlerType) => import("./types").UnsubscribeFunc), 
 /**
  * It sets an event listener listening to the event with the provided name only once
  * The listener called immediately if an event was stored in the target's "courierEventDataStore"
@@ -22,7 +22,7 @@ on: ((...args: any[]) => void | Function) | ((eventName: string, handler: import
  * @param {HandlerType} handler - function called once the event with this name fired on the event target
  * @return function that removes this listener from the event target
  */
-once: ((...args: any[]) => void | Function) | ((eventName: string, handler: import("./types").HandlerType) => import("./types").UnsubscribeFunc), 
+once: (() => any) | ((eventName: string, handler: import("./types").HandlerType) => import("./types").UnsubscribeFunc), 
 /**
  * A convenience method that sets event listeners in a bulk
  * @public
@@ -36,7 +36,7 @@ subscribe: (handlers: import("./types").HandlerCollection) => import("./types").
  * @param {string} eventName - an event name
  * @param {any} data - data to be sent with this event
  */
-emit: ((...args: any[]) => void | Function) | ((eventName: string, data: any) => void), 
+emit: (eventName: string, data: any) => void, 
 /**
  * Fires an event on the event target with the provided name and data
  * and provides "sendResponse" function to be (optionally) called by the event listener
@@ -45,7 +45,7 @@ emit: ((...args: any[]) => void | Function) | ((eventName: string, data: any) =>
  * @param {any} data - data to be sent with this event
  * @param {SendResponseType} sendResponse = function to be (optionally) called by the event listener
  */
-emitWithResponse: ((...args: any[]) => void | Function) | ((eventName: string, data: any, sendResponse: import("./types").SendResponseType) => void), 
+emitWithResponse: (eventName: string, data: any, sendResponse: import("./types").SendResponseType) => void, emitAndWait: (() => any) | ((eventName: string, data: any) => Promise<unknown>), 
 /**
  * Fires an event on the event target with the provided name and data
  * and saves the data in the special event target's store for late subscribers
@@ -53,7 +53,7 @@ emitWithResponse: ((...args: any[]) => void | Function) | ((eventName: string, d
  * @param {string} eventName - an event name
  * @param {any} data - data to be sent with this event
  */
-emitAndStore: ((...args: any[]) => void | Function) | ((eventName: string, data: any) => void), 
+emitAndStore: (eventName: string, data: any) => void, 
 /**
  * Fires an event on the event target with the provided name and data
  * and provides "sendResponse" function to be (optionally) called by the event listener
@@ -63,4 +63,4 @@ emitAndStore: ((...args: any[]) => void | Function) | ((eventName: string, data:
  * @param {any} data - data to be sent with this event
  * @param {SendResponseType} sendResponse = function to be (optionally) called by the event listener
  */
-emitAndStoreWithResponse: ((...args: any[]) => void | Function) | ((eventName: string, data: any, sendResponse: import("./types").SendResponseType) => void);
+emitAndStoreWithResponse: (eventName: string, data: any, sendResponse: import("./types").SendResponseType) => void;

@@ -105,6 +105,12 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
         _emit(eventName, data, sendResponse);
     }
 
+    function emitAndWait(eventName: string, data: any) {
+        return new Promise((resolve)=>{
+            emitWithResponse(eventName, data, resolve);
+        })
+    }
+
     /**
      * Fires an event on the event target with the provided name and data
      * and provides "sendResponse" function to be (optionally) called by the event listener
@@ -219,6 +225,7 @@ export function createCourier(target: EventTargetType, isCurried: boolean = fals
         emit: isCurried ? curry(emit) : emit,
         emitWithResponse: isCurried ? curry(emitWithResponse) : emitWithResponse,
         emitAndStore: isCurried ? curry(emitAndStore) : emitAndStore,
+        emitAndWait: isCurried ? curry(emitAndWait) : emitAndWait,
         emitAndStoreWithResponse: isCurried
             ? curry(emitAndStoreWithResponse)
             : emitAndStoreWithResponse,

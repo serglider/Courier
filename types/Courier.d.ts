@@ -9,11 +9,12 @@ import { EventTargetType, HandlerCollection, HandlerType, SendResponseType, Unsu
  * @param {boolean} [isCurried=true] - flag indicating whether to curry output functions or not
  */
 export declare function createCourier(target: EventTargetType, isCurried?: boolean): {
-    on: ((...args: any[]) => void | Function) | ((eventName: string, handler: HandlerType) => UnsubscribeFunc);
-    once: ((...args: any[]) => void | Function) | ((eventName: string, handler: HandlerType) => UnsubscribeFunc);
-    emit: ((...args: any[]) => void | Function) | ((eventName: string, data: any) => void);
-    emitWithResponse: ((...args: any[]) => void | Function) | ((eventName: string, data: any, sendResponse: SendResponseType) => void);
-    emitAndStore: ((...args: any[]) => void | Function) | ((eventName: string, data: any) => void);
-    emitAndStoreWithResponse: ((...args: any[]) => void | Function) | ((eventName: string, data: any, sendResponse: SendResponseType) => void);
+    on: (() => any) | ((eventName: string, handler: HandlerType) => UnsubscribeFunc);
+    once: (() => any) | ((eventName: string, handler: HandlerType) => UnsubscribeFunc);
+    emit: (eventName: string, data: any) => void;
+    emitWithResponse: (eventName: string, data: any, sendResponse: SendResponseType) => void;
+    emitAndStore: (eventName: string, data: any) => void;
+    emitAndWait: (() => any) | ((eventName: string, data: any) => Promise<unknown>);
+    emitAndStoreWithResponse: (eventName: string, data: any, sendResponse: SendResponseType) => void;
     subscribe: (handlers: HandlerCollection) => UnsubscribeFuncCollection;
 };

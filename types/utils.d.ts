@@ -16,7 +16,7 @@ export declare function customize(handler: HandlerType): ({ detail, sendResponse
  * @param {function} func
  * @return curried function
  */
-export declare function curry(func: Function): (...args: any[]) => Function | void;
+export declare function curry(func: Function): () => any;
 /**
  * A function that does nothing
  * @private

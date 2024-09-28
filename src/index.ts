@@ -54,6 +54,8 @@ export const {
      */
     emitWithResponse,
 
+    emitAndWait,
+
     /**
      * Fires an event on the event target with the provided name and data
      * and saves the data in the special event target's store for late subscribers
